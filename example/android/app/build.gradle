@@ -197,6 +197,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-safe-area-context')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"
     compile project(path: ':fast-animations')  // From node_modules

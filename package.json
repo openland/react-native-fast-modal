@@ -11,9 +11,9 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf dist && tsc -p ./src",
-    "dev": "cd example && yarn && cd ios && pod install && cd ../.. && yarn tsc -p ./src && concurrently --kill-others 'yarn dev:lib' 'yarn dev:example' 'yarn dev:bundler'",
+    "dev": "cd example && yarn && rm -rf build && ../node_modules/.bin/tsc && cd ios && pod install && cd ../.. && yarn tsc -p ./src && concurrently --kill-others 'yarn dev:lib' 'yarn dev:example' 'yarn dev:bundler'",
     "dev:lib": "tsc -p ./src -w",
-    "dev:example": "cd example && rm -rf build && ../node_modules/.bin/tsc -w",
+    "dev:example": "cd example && ../node_modules/.bin/tsc -w",
     "dev:bundler": "cd example && yarn react-native start"
   },
   "bugs": {
@@ -27,7 +27,8 @@
   "peerDependencies": {
     "@babel/runtime": "*",
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-safe-area-context": "*"
   },
   "devDependencies": {
     "@types/react-native": "0.60.8",
@@ -41,6 +42,7 @@
   },
   "dependencies": {
     "react-native-fast-animations": "^0.0.2",
+    "react-native-safe-area-context": "^0.7.3",
     "uuid": "^3.4.0"
   },
   "files": [

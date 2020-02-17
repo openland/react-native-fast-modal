@@ -1,24 +1,29 @@
 import * as React from 'react';
-import { View, Button } from 'react-native';
+import { View, Button, TextInput } from 'react-native';
 import { ModalProvider, showModal } from 'react-native-fast-modal';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 class App extends React.Component<{}> {
 
   render() {
     return (
-      <>
+      <SafeAreaProvider>
         <View style={{ flexGrow: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <Button
             title="Show Modal"
             onPress={() => {
               showModal(() => {
-                return null;
+                return (
+                  <View style={{ height: 200, width: 300, flexDirection: 'column', alignItems: 'stretch' }}>
+                    <TextInput style={{ height: 56, backgroundColor: 'red' }} />
+                  </View>
+                );
               });
             }}
           />
         </View>
         <ModalProvider />
-      </>
+      </SafeAreaProvider>
     )
   }
 }

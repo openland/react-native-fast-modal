@@ -30,4 +30,6 @@ target 'FastModalExample' do
   pod 'SwiftyJSON', '~> 4.0'
 
   use_native_modules!
+  pod 'react-native-safe-area-context', :path => '../../node_modules/react-native-safe-area-context'
+
 end

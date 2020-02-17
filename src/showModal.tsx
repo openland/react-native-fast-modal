@@ -1,37 +1,35 @@
 import * as React from 'react';
 import { ModalComponent, showRawModal, ModalProps } from './ModalProvider';
-import { View, StyleSheet, TouchableWithoutFeedback, Modal, InputAccessoryView } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, ViewStyle, KeyboardAvoidingView } from 'react-native';
 import { SAnimatedView, SAnimated } from 'react-native-fast-animations';
+import { useSafeArea } from 'react-native-safe-area-context';
 import uuid from 'uuid/v4';
+import { animations } from './animations';
 
 const styles = StyleSheet.create({
-    root: {
+    fill: {
         width: '100%',
         height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     background: {
         opacity: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.48)',
         width: '100%',
         height: '100%',
+    },
+    backgroundDefault: {
+        backgroundColor: 'rgba(0, 0, 0, 0.48)'
     }
 });
 
-function playOpenAnimation(rootName: string, containerName: string) {
-    SAnimated.timing(rootName, { property: 'opacity', from: 0, to: 1, duration: 0.25 });
-    SAnimated.timing(containerName, { property: 'opacity', from: 0, to: 1, duration: 0.15 });
-    SAnimated.spring(containerName, { property: 'translateY', from: 100, to: 0, duration: 0.15 });
+export interface ModalConfiguration {
+    backgroundStyle?: ViewStyle;
+    containerStyle?: ViewStyle;
+    showAnimation?: (views: { background: string, container: string }) => void;
+    hideAnimation?: (views: { background: string, container: string }) => void;
+    dismissOffset?: number;
 }
 
-function playHideAnimation(rootName: string, containerName: string) {
-    SAnimated.timing(rootName, { property: 'opacity', from: 1, to: 0, duration: 0.15 });
-    SAnimated.timing(containerName, { property: 'opacity', from: 1, to: 0, duration: 0.15 });
-    SAnimated.spring(containerName, { property: 'translateY', from: 0, to: 100, duration: 0.15 });
-}
-
-const BaseModalComponent = React.memo((props: { children?: any, props: ModalProps, modal: ModalComponent }) => {
+const BaseModalComponent = React.memo((props: { children?: any, props: ModalProps, config: ModalConfiguration, modal: ModalComponent }) => {
     const rootName = React.useMemo(() => uuid(), []);
     const containerName = React.useMemo(() => uuid(), []);
 
@@ -45,7 +43,9 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
 
             // Hide Sequence
             SAnimated.beginTransaction();
-            playHideAnimation(rootName, containerName)
+            (props.config.hideAnimation || animations.defaultModalHideAnimation)(
+                { background: rootName, container: containerName }
+            );
             SAnimated.commitTransaction(() => {
                 props.props.hide();
             });
@@ -54,32 +54,64 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
 
     React.useEffect(() => {
         SAnimated.beginTransaction();
-        playOpenAnimation(rootName, containerName)
+        (props.config.showAnimation || animations.defaultModalShowAnimation)(
+            { background: rootName, container: containerName }
+        );
         SAnimated.commitTransaction();
     }, []);
 
     const element = React.useMemo(() => props.modal({ hide: doHide }), []);
+    const safeArea = useSafeArea();
 
     return (
-        <View style={styles.root}>
+        <View style={styles.fill}>
             <TouchableWithoutFeedback onPress={doHide}>
                 <View style={StyleSheet.absoluteFill}>
-                    <SAnimatedView name={rootName} style={styles.background} />
+                    <SAnimatedView
+                        name={rootName}
+                        style={[styles.backgroundDefault, props.config.backgroundStyle, styles.background]}
+                    />
                 </View>
             </TouchableWithoutFeedback>
-            <SAnimatedView name={containerName}>
-                <View style={{ width: 100, height: 100, backgroundColor: 'white', borderRadius: 18 }} pointerEvents="box-only">
-                    {element}
-                </View>
+            <SAnimatedView name={containerName} style={styles.fill}>
+                <KeyboardAvoidingView behavior="padding">
+                    <ScrollView
+                        alwaysBounceVertical={true}
+                        decelerationRate={0.8}
+                        style={styles.fill}
+                        onScrollEndDrag={(e) => {
+                            if (e.nativeEvent.contentOffset.y < -(props.config.dismissOffset !== undefined ? props.config.dismissOffset : 30)) {
+                                doHide();
+                            }
+                        }}
+                        contentContainerStyle={{
+                            flexDirection: 'column',
+                            flexGrow: 1,
+                            marginBottom: safeArea.bottom,
+                            marginTop: safeArea.top,
+                            marginLeft: safeArea.left,
+                            marginRight: safeArea.right,
+                        }}
+                    >
+                        <TouchableWithoutFeedback onPress={doHide}>
+                            <View style={{ flexGrow: 1 }} />
+                        </TouchableWithoutFeedback>
+                        <View
+                            style={[{ backgroundColor: 'white', borderRadius: 18, padding: 8 }, props.config.containerStyle]}
+                        >
+                            {element}
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </SAnimatedView>
         </View>
     )
 });
 
-export function showModal(modal: ModalComponent) {
+export function showModal(modal: ModalComponent, config?: ModalConfiguration) {
     showRawModal((props) => {
         return (
-            <BaseModalComponent props={props} modal={modal} />
+            <BaseModalComponent props={props} modal={modal} config={config || {}} />
         );
     });
 }

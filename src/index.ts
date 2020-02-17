@@ -5,5 +5,9 @@ export {
     ModalComponent
 } from './ModalProvider';
 export {
-    showModal
+    showModal,
+    ModalConfiguration
 } from './showModal';
+export {
+    animations
+} from './animations';

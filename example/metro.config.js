@@ -14,7 +14,8 @@ const extraNodeModules = {
   'react': path.resolve(__dirname, 'node_modules/react'),
   'react-native': path.resolve(__dirname, 'node_modules/react-native'),
   '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
-  'react-native-fast-modal': packagePath
+  'react-native-fast-modal': packagePath,
+  'react-native-safe-area-context': path.resolve(packagePath, 'node_modules', 'react-native-safe-area-context')
 }
 
 module.exports = {
