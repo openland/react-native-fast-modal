@@ -1,0 +1,53 @@
+{
+  "name": "react-native-fast-modal",
+  "version": "0.0.2",
+  "description": "Fast Modal for React Native",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "react-native"
+  ],
+  "author": "ex3ndr",
+  "license": "MIT",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p ./src",
+    "dev": "cd example && yarn && cd ios && pod install && cd ../.. && yarn tsc -p ./src && concurrently --kill-others 'yarn dev:lib' 'yarn dev:example' 'yarn dev:bundler'",
+    "dev:lib": "tsc -p ./src -w",
+    "dev:example": "cd example && rm -rf build && ../node_modules/.bin/tsc -w",
+    "dev:bundler": "cd example && yarn react-native start"
+  },
+  "bugs": {
+    "url": "https://github.com/openland/react-native-fast-animations/issues"
+  },
+  "homepage": "https://github.com/openland/react-native-fast-animations#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openland/react-native-fast-animations.git"
+  },
+  "peerDependencies": {
+    "@babel/runtime": "*",
+    "react": "*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@types/react-native": "0.60.8",
+    "@types/uuid": "^3.4.7",
+    "concurrently": "^5.1.0",
+    "journey-tslint": "^1.0.0",
+    "tslint": "5.19.0",
+    "tslint-config-standard": "8.0.1",
+    "tslint-react": "4.0.0",
+    "typescript": "3.5.3"
+  },
+  "dependencies": {
+    "react-native-fast-animations": "^0.0.2",
+    "uuid": "^3.4.0"
+  },
+  "files": [
+    "src",
+    "dist",
+    "tslint.json",
+    "*.md",
+    "LICENSE"
+  ]
+}
