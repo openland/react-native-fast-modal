@@ -3,7 +3,7 @@ import uuid from 'uuid/v4';
 import { View, StyleSheet } from 'react-native';
 
 export type ModalProps = { hide: () => void };
-export type ModalComponent = (props: ModalProps) => React.ReactElement<{}>;
+export type ModalComponent = (props: ModalProps) => React.ReactElement<{}> | null;
 
 interface ModalController {
     showModal(modal: ModalComponent): void;
@@ -19,7 +19,7 @@ export function showRawModal(modal: ModalComponent) {
 }
 
 export const ModalProvider = React.memo(() => {
-    let [modals, setModals] = React.useState<{ element: React.ReactElement<{}>, key: string }[]>([]);
+    let [modals, setModals] = React.useState<{ element: React.ReactElement<{}> | null, key: string }[]>([]);
     // Using memo for registering controller ASAP
     React.useMemo<ModalController>(() => {
         let res: ModalController = {
