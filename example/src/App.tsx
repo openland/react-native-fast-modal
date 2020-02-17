@@ -8,13 +8,13 @@ class App extends React.Component<{}> {
   render() {
     return (
       <SafeAreaProvider>
-        <View style={{ flexGrow: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ flexGrow: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
           <Button
             title="Show Modal"
             onPress={() => {
               showModal(() => {
                 return (
-                  <View style={{ height: 200, width: 300, flexDirection: 'column', alignItems: 'stretch' }}>
+                  <View style={{ height: 900, width: 300, flexDirection: 'column', alignItems: 'stretch' }}>
                     <TextInput style={{ height: 56, backgroundColor: 'red' }} />
                   </View>
                 );

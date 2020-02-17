@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ModalComponent, showRawModal, ModalProps } from './ModalProvider';
-import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, ViewStyle, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, ViewStyle, KeyboardAvoidingView, LayoutChangeEvent, Keyboard, BackHandler } from 'react-native';
 import { SAnimatedView, SAnimated } from 'react-native-fast-animations';
 import { useSafeArea } from 'react-native-safe-area-context';
 import uuid from 'uuid/v4';
@@ -24,44 +24,64 @@ const styles = StyleSheet.create({
 export interface ModalConfiguration {
     backgroundStyle?: ViewStyle;
     containerStyle?: ViewStyle;
-    showAnimation?: (views: { background: string, container: string }) => void;
-    hideAnimation?: (views: { background: string, container: string }) => void;
+    showAnimation?: (contentHeight: number, views: { background: string, container: string }) => void;
+    hideAnimation?: (contentHeight: number, views: { background: string, container: string }) => void;
     dismissOffset?: number;
 }
 
 const BaseModalComponent = React.memo((props: { children?: any, props: ModalProps, config: ModalConfiguration, modal: ModalComponent }) => {
     const rootName = React.useMemo(() => uuid(), []);
     const containerName = React.useMemo(() => uuid(), []);
+    const contentHeight = React.useRef(0);
+    const safeArea = useSafeArea();
 
     const doHide = React.useMemo(() => {
         let hidden = false;
         return () => {
             if (hidden) {
-                return;
+                return false;
             }
             hidden = true;
 
             // Hide Sequence
             SAnimated.beginTransaction();
             (props.config.hideAnimation || animations.defaultModalHideAnimation)(
-                { background: rootName, container: containerName }
+                contentHeight.current + safeArea.bottom, { background: rootName, container: containerName }
             );
             SAnimated.commitTransaction(() => {
                 props.props.hide();
             });
+            return true;
         };
     }, []);
 
-    React.useEffect(() => {
-        SAnimated.beginTransaction();
-        (props.config.showAnimation || animations.defaultModalShowAnimation)(
-            { background: rootName, container: containerName }
-        );
-        SAnimated.commitTransaction();
+    const doShow = React.useMemo(() => {
+        let shown = false;
+        return () => {
+            if (shown) {
+                return false;
+            }
+            shown = true;
+            SAnimated.beginTransaction();
+            (props.config.showAnimation || animations.defaultModalShowAnimation)(
+                contentHeight.current + safeArea.bottom, { background: rootName, container: containerName }
+            );
+            SAnimated.commitTransaction();
+            return true;
+        };
+    }, []);
+
+    const onLayoutCallback = React.useCallback((layout: LayoutChangeEvent) => {
+        contentHeight.current = layout.nativeEvent.layout.height;
+        doShow();
     }, []);
 
     const element = React.useMemo(() => props.modal({ hide: doHide }), []);
-    const safeArea = useSafeArea();
+
+    React.useEffect(() => {
+        let subs = BackHandler.addEventListener('hardwareBackPress', doHide);
+        return () => subs.remove();
+    }, []);
 
     return (
         <View style={styles.fill}>
@@ -73,7 +93,7 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
                     />
                 </View>
             </TouchableWithoutFeedback>
-            <SAnimatedView name={containerName} style={styles.fill}>
+            <SAnimatedView name={containerName} style={[styles.fill, { opacity: 0 }]}>
                 <KeyboardAvoidingView behavior="padding">
                     <ScrollView
                         alwaysBounceVertical={true}
@@ -87,17 +107,21 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
                         contentContainerStyle={{
                             flexDirection: 'column',
                             flexGrow: 1,
-                            marginBottom: safeArea.bottom,
-                            marginTop: safeArea.top,
-                            marginLeft: safeArea.left,
-                            marginRight: safeArea.right,
+                            paddingBottom: safeArea.bottom,
+                            paddingTop: safeArea.top,
+                            paddingLeft: safeArea.left,
+                            paddingRight: safeArea.right,
                         }}
                     >
                         <TouchableWithoutFeedback onPress={doHide}>
-                            <View style={{ flexGrow: 1 }} />
+                            <View style={{ flexGrow: 1, backgroundColor: 'red' }} />
                         </TouchableWithoutFeedback>
                         <View
-                            style={[{ backgroundColor: 'white', borderRadius: 18, padding: 8 }, props.config.containerStyle]}
+                            style={[
+                                { backgroundColor: 'white', borderRadius: 18, padding: 8 },
+                                props.config.containerStyle
+                            ]}
+                            onLayout={onLayoutCallback}
                         >
                             {element}
                         </View>

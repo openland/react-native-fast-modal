@@ -43,11 +43,15 @@ export const ModalProvider = React.memo(() => {
 
     return (
         <>
-            {modals.map((v) => (
-                <View key={v.key} style={StyleSheet.absoluteFill}>
-                    {v.element}
+            {modals.length > 0 && (
+                <View style={[StyleSheet.absoluteFill, { zIndex: 10 }]}>
+                    {modals.map((v) => (
+                        <View key={v.key} style={StyleSheet.absoluteFill}>
+                            {v.element}
+                        </View>
+                    ))}
                 </View>
-            ))}
+            )}
         </>
     )
 });
