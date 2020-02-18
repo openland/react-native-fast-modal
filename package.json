@@ -1,6 +1,6 @@
 {
   "name": "react-native-fast-modal",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Fast Modal for React Native",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,20 +28,20 @@
     "@babel/runtime": "*",
     "react": "*",
     "react-native": "*",
-    "react-native-safe-area-context": "*",
-    "react-native-fast-animations": "*"
+    "react-native-fast-animations": "*",
+    "react-native-safe-area-context": "*"
   },
   "devDependencies": {
     "@types/react-native": "0.60.8",
     "@types/uuid": "^3.4.7",
     "concurrently": "^5.1.0",
     "journey-tslint": "^1.0.0",
+    "react-native-fast-animations": "^0.0.2",
+    "react-native-safe-area-context": "^0.7.3",
     "tslint": "5.19.0",
     "tslint-config-standard": "8.0.1",
     "tslint-react": "4.0.0",
-    "typescript": "3.5.3",
-    "react-native-safe-area-context": "^0.7.3",
-    "react-native-fast-animations": "^0.0.2"
+    "typescript": "3.5.3"
   },
   "dependencies": {
     "uuid": "^3.4.0"
