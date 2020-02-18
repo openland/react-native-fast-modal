@@ -2,7 +2,26 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import Animated, {
-    block, set, cond, eq, event, add, sub, min, max, greaterThan, lessThan, multiply, divide, debug, or
+    block,
+    set,
+    cond,
+    eq,
+    event,
+    add,
+    sub,
+    greaterThan,
+    lessThan,
+    multiply,
+    divide,
+    not,
+    or,
+    and,
+    clockRunning,
+    startClock,
+    stopClock,
+    abs,
+    debug,
+    decay
 } from 'react-native-reanimated';
 // UIScrollView decelerationRate = 0.55
 // iOS default swipe tolerance = 10pt
@@ -24,24 +43,29 @@ function projectedTarget(initialVelicity: number, decelerationRate: number = 0.5
 
 // Rubber Band Effect from iOS
 function rubberBandOffset(x: number, d: number = 300, c: number = 0.55) {
-    return Math.sign(x) * (Math.abs(x) * d * c) / (d + c * Math.abs(x));
+    return (x * d * c) / (d + c * x);
+}
+
+function rubberBandOffsetInvert(x: number, d: number = 300, c: number = 0.55) {
+    return d * x / (c * (d - x));
 }
 
 function rubberBandOffsetAnimated(x: Animated.Node<number>, d: number = 300, c: number = 0.55) {
     return divide(multiply(x, d * c), add(d, multiply(x, c)));
 }
 
-function rubberBandModal(x: number) {
-    return rubberBandOffset(x, 300, 0.1);
+function rubberBandOffsetInvertAnimated(x: Animated.Node<number>, d: number = 300, c: number = 0.55) {
+    return divide(multiply(x, d), multiply(c, sub(d, x)));
 }
 
 export const ModalBody = React.memo(() => {
 
-    const contentHeight = 300;
+    const contentHeight = 400;
     const containerHeight = 200;
 
     const animatedValues = React.useMemo(() => {
 
+        let velocity = new Animated.Value<number>(0);
         let contentOffset = new Animated.Value<number>(0);
         let gestureStarted = new Animated.Value<number>(0);
         let dragStartOffset = new Animated.Value<number>(0);
@@ -59,14 +83,16 @@ export const ModalBody = React.memo(() => {
 
         const dragYDistance = sub(dragY, dragStartY);
         const dragDestinationY = add(dragStartOffset, dragYDistance);
+        const movingClock = new Animated.Clock();
+        const CONSTANT = 0.3;
 
         function rubberBand(x: Animated.Node<number>) {
             return block([
                 cond(lessThan(x, 0), [
-                    multiply(rubberBandOffsetAnimated(multiply(x, -1)), -1)
+                    multiply(rubberBandOffsetAnimated(multiply(x, -1), 300, CONSTANT), -1)
                 ], [
                     cond(greaterThan(x, contentHeight - containerHeight), [
-                        add(rubberBandOffsetAnimated(sub(x, contentHeight - containerHeight)), contentHeight - containerHeight)
+                        add(rubberBandOffsetAnimated(sub(x, contentHeight - containerHeight), 300, CONSTANT), contentHeight - containerHeight)
                     ], [
                         x
                     ])
@@ -81,18 +107,51 @@ export const ModalBody = React.memo(() => {
                     set(dragStartY, dragY),
                     set(dragStartOffset, contentOffset),
                 ], []),
-                debug('dest', dragDestinationY),
-                set(contentOffset, rubberBand(dragDestinationY)),
+                rubberBand(dragDestinationY)
             ], [
-                set(gestureStarted, 0),
-                set(dragStartY, 0),
-                set(dragStartOffset, 0),
-                debug('stopped', gestureState)
+                cond(eq(gestureStarted, 1), [
+                    set(gestureStarted, 0),
+                    set(dragStartY, 0),
+                    set(dragStartOffset, 0),
+                    set(velocity, dragVelocityY)
+                ]),
+                cond(lessThan(contentOffset, 0), [
+                    0
+                ], cond(greaterThan(contentOffset, contentHeight - containerHeight), [
+                    contentHeight - containerHeight
+                ], [
+                    contentOffset
+                ]))
             ]),
+        ]);
+
+        const delta = sub(processDragging, contentOffset);
+
+        const updatePhysics = block([
+            cond(eq(gestureStarted, 1), [
+                set(contentOffset, processDragging) // Set offset directly during gestures
+            ], [
+                cond(lessThan(abs(delta), add(multiply(movingClock, 0), 0.5)), [
+                    set(contentOffset, processDragging)
+                ], [
+                    set(contentOffset, add(contentOffset, multiply(delta, 0.3)))
+                ])
+            ]),
+        ]);
+
+        let launchMovement = block([
+            cond(and(not(eq(processDragging, contentOffset)), not(clockRunning(movingClock))), [
+                startClock(movingClock)
+            ]),
+            cond(and(eq(processDragging, contentOffset), clockRunning(movingClock)), [
+                stopClock(movingClock)
+            ]),
+            updatePhysics
         ]);
 
         let output = block([
             processDragging,
+            launchMovement,
             contentOffset
         ]);
 
