@@ -31,5 +31,7 @@ target 'FastModalExample' do
 
   use_native_modules!
   pod 'react-native-safe-area-context', :path => '../../node_modules/react-native-safe-area-context'
+  pod 'RNGestureHandler', :path => '../../node_modules/react-native-gesture-handler'
+  pod 'RNReanimated', :path => '../../node_modules/react-native-reanimated'
 
 end

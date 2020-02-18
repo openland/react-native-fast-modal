@@ -84,6 +84,10 @@ PODS:
     - React-Core (= 0.60.5)
   - React-RCTWebSocket (0.60.5):
     - React-Core (= 0.60.5)
+  - RNGestureHandler (1.6.0):
+    - React
+  - RNReanimated (1.7.0):
+    - React
   - SwiftyJSON (4.3.0)
   - yoga (0.60.5.React)
 
@@ -110,6 +114,8 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
+  - RNGestureHandler (from `../../node_modules/react-native-gesture-handler`)
+  - RNReanimated (from `../../node_modules/react-native-reanimated`)
   - SwiftyJSON (~> 4.0)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -163,6 +169,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   React-RCTWebSocket:
     :path: "../node_modules/react-native/Libraries/WebSocket"
+  RNGestureHandler:
+    :path: "../../node_modules/react-native-gesture-handler"
+  RNReanimated:
+    :path: "../../node_modules/react-native-reanimated"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -190,9 +200,11 @@ SPEC CHECKSUMS:
   React-RCTText: b074d89033583d4f2eb5faf7ea2db3a13c7553a2
   React-RCTVibration: 2105b2e0e2b66a6408fc69a46c8a7fb5b2fdade0
   React-RCTWebSocket: cd932a16b7214898b6b7f788c8bddb3637246ac4
+  RNGestureHandler: dde546180bf24af0b5f737c8ad04b6f3fa51609a
+  RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
   yoga: 312528f5bbbba37b4dcea5ef00e8b4033fdd9411
 
-PODFILE CHECKSUM: 98871de27a334c0186e430d229a6bcdc688aa773
+PODFILE CHECKSUM: 1987eb2de78fa629c70a3312a8b709e9ffa87855
 
 COCOAPODS: 1.8.4

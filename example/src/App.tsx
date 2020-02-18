@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { View, Button, TextInput } from 'react-native';
-import { ModalProvider, showModal } from 'react-native-fast-modal';
+import { View } from 'react-native';
+import { ModalProvider, ModalBody } from 'react-native-fast-modal';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 class App extends React.Component<{}> {
@@ -9,7 +9,7 @@ class App extends React.Component<{}> {
     return (
       <SafeAreaProvider>
         <View style={{ flexGrow: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
-          <Button
+          {/* <Button
             title="Show Modal"
             onPress={() => {
               showModal(() => {
@@ -20,7 +20,8 @@ class App extends React.Component<{}> {
                 );
               });
             }}
-          />
+          /> */}
+          <ModalBody />
         </View>
         <ModalProvider />
       </SafeAreaProvider>

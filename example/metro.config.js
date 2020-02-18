@@ -15,7 +15,9 @@ const extraNodeModules = {
   'react-native': path.resolve(__dirname, 'node_modules/react-native'),
   '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
   'react-native-fast-modal': packagePath,
-  'react-native-safe-area-context': path.resolve(packagePath, 'node_modules', 'react-native-safe-area-context')
+  'react-native-safe-area-context': path.resolve(packagePath, 'node_modules', 'react-native-safe-area-context'),
+  'react-native-gesture-handler': path.resolve(packagePath, 'node_modules', 'react-native-gesture-handler'),
+  'react-native-reanimated': path.resolve(packagePath, 'node_modules', 'react-native-reanimated')
 }
 
 module.exports = {

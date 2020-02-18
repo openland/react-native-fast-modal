@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ModalComponent, showRawModal, ModalProps } from './ModalProvider';
-import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, ViewStyle, KeyboardAvoidingView, LayoutChangeEvent, Keyboard, BackHandler } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, ViewStyle, KeyboardAvoidingView, LayoutChangeEvent, BackHandler } from 'react-native';
 import { SAnimatedView, SAnimated } from 'react-native-fast-animations';
 import { useSafeArea } from 'react-native-safe-area-context';
 import uuid from 'uuid/v4';

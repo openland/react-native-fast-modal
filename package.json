@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf dist && tsc -p ./src",
-    "dev": "cd example && yarn && rm -rf build && ../node_modules/.bin/tsc && cd ios && pod install && cd ../.. && yarn tsc -p ./src && concurrently --kill-others 'yarn dev:lib' 'yarn dev:example' 'yarn dev:bundler'",
+    "dev": "yarn tsc -p ./src && cd example && yarn && rm -rf build && ../node_modules/.bin/tsc && cd ios && pod install && cd ../.. && concurrently --kill-others 'yarn dev:lib' 'yarn dev:example' 'yarn dev:bundler'",
     "dev:lib": "tsc -p ./src -w",
     "dev:example": "cd example && ../node_modules/.bin/tsc -w",
     "dev:bundler": "cd example && yarn react-native start"
@@ -28,22 +28,26 @@
     "@babel/runtime": "*",
     "react": "*",
     "react-native": "*",
-    "react-native-safe-area-context": "*",
-    "react-native-fast-animations": "*"
+    "react-native-fast-animations": "*",
+    "react-native-gesture-handler": "*",
+    "react-native-safe-area-context": "*"
   },
   "devDependencies": {
     "@types/react-native": "0.60.8",
     "@types/uuid": "^3.4.7",
     "concurrently": "^5.1.0",
     "journey-tslint": "^1.0.0",
+    "react-native-fast-animations": "^0.0.2",
+    "react-native-gesture-handler": "^1.6.0",
+    "react-native-safe-area-context": "^0.7.3",
     "tslint": "5.19.0",
     "tslint-config-standard": "8.0.1",
     "tslint-react": "4.0.0",
-    "typescript": "3.5.3",
-    "react-native-safe-area-context": "^0.7.3",
-    "react-native-fast-animations": "^0.0.2"
+    "typescript": "3.7.5"
   },
   "dependencies": {
+    "fbjs": "^1.0.0",
+    "react-native-reanimated": "^1.7.0",
     "uuid": "^3.4.0"
   },
   "files": [

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "fbjs": "^1.0.0",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-fast-animations": "^0.0.2"

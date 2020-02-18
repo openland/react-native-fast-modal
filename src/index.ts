@@ -11,3 +11,6 @@ export {
 export {
     animations
 } from './animations';
+export {
+    ModalBody
+} from './ModalBody';
