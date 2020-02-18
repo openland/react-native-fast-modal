@@ -114,7 +114,7 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
                         }}
                     >
                         <TouchableWithoutFeedback onPress={doHide}>
-                            <View style={{ flexGrow: 1, backgroundColor: 'red' }} />
+                            <View style={{ flexGrow: 1 }} />
                         </TouchableWithoutFeedback>
                         <View
                             style={[
