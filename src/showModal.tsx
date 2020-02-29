@@ -27,6 +27,7 @@ export interface ModalConfiguration {
     showAnimation?: (contentHeight: number, views: { background: string, container: string }) => void;
     hideAnimation?: (contentHeight: number, views: { background: string, container: string }) => void;
     dismissOffset?: number;
+    avoidKeyboard?: boolean;
 }
 
 const BaseModalComponent = React.memo((props: { children?: any, props: ModalProps, config: ModalConfiguration, modal: ModalComponent }) => {
@@ -94,7 +95,7 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
                 </View>
             </TouchableWithoutFeedback>
             <SAnimatedView name={containerName} style={[styles.fill, { opacity: 0 }]}>
-                <KeyboardAvoidingView behavior="padding">
+                <KeyboardAvoidingView behavior="padding" enabled={props.config.avoidKeyboard || false}>
                     <ScrollView
                         alwaysBounceVertical={true}
                         decelerationRate={0.8}
