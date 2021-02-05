@@ -28,6 +28,7 @@ export interface ModalConfiguration {
     hideAnimation?: (contentHeight: number, views: { background: string, container: string }) => void;
     dismissOffset?: number;
     avoidKeyboard?: boolean;
+    fillBottomSafeArea?: boolean;
 }
 
 const BaseModalComponent = React.memo((props: { children?: any, props: ModalProps, config: ModalConfiguration, modal: ModalComponent }) => {
@@ -108,7 +109,7 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
                         contentContainerStyle={{
                             flexDirection: 'column',
                             flexGrow: 1,
-                            paddingBottom: safeArea.bottom,
+                            paddingBottom: props.config.fillBottomSafeArea ? 0 : safeArea.bottom,
                             paddingTop: safeArea.top,
                             paddingLeft: safeArea.left,
                             paddingRight: safeArea.right,
@@ -119,7 +120,12 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
                         </TouchableWithoutFeedback>
                         <View
                             style={[
-                                { backgroundColor: 'white', borderRadius: 18, padding: 8 },
+                                {
+                                    backgroundColor: 'white',
+                                    borderRadius: 18,
+                                    padding: 8,
+                                    paddingBottom: props.config.fillBottomSafeArea ? safeArea.bottom : 8,
+                                },
                                 props.config.containerStyle
                             ]}
                             onLayout={onLayoutCallback}
