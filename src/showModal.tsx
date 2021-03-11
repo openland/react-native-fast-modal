@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ModalComponent, showRawModal, ModalProps } from './ModalProvider';
-import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, ViewStyle, KeyboardAvoidingView, LayoutChangeEvent, Keyboard, BackHandler } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, ScrollView, ViewStyle, KeyboardAvoidingView, LayoutChangeEvent, BackHandler, ScrollViewProps } from 'react-native';
 import { SAnimatedView, SAnimated } from 'react-native-fast-animations';
 import { useSafeArea } from 'react-native-safe-area-context';
 import uuid from 'uuid/v4';
@@ -29,6 +29,7 @@ export interface ModalConfiguration {
     dismissOffset?: number;
     avoidKeyboard?: boolean;
     disableBottomSafeArea?: boolean;
+    scrollViewProps?: ScrollViewProps;
 }
 
 const BaseModalComponent = React.memo((props: { children?: any, props: ModalProps, config: ModalConfiguration, modal: ModalComponent }) => {
@@ -100,20 +101,24 @@ const BaseModalComponent = React.memo((props: { children?: any, props: ModalProp
                     <ScrollView
                         alwaysBounceVertical={true}
                         decelerationRate={0.8}
-                        style={styles.fill}
+                        style={[styles.fill, props.config.scrollViewProps?.style || {}]}
                         onScrollEndDrag={(e) => {
                             if (e.nativeEvent.contentOffset.y < -(props.config.dismissOffset !== undefined ? props.config.dismissOffset : 30)) {
                                 doHide();
                             }
+                            if (props.config.scrollViewProps?.onScrollEndDrag) {
+                                props.config.scrollViewProps.onScrollEndDrag(e);
+                            }
                         }}
-                        contentContainerStyle={{
+                        contentContainerStyle={[{
                             flexDirection: 'column',
                             flexGrow: 1,
                             paddingBottom: props.config.disableBottomSafeArea ? 0 : safeArea.bottom,
                             paddingTop: safeArea.top,
                             paddingLeft: safeArea.left,
                             paddingRight: safeArea.right,
-                        }}
+                        }, props.config.scrollViewProps?.contentContainerStyle || {}]}
+                        {...props.config.scrollViewProps}
                     >
                         <TouchableWithoutFeedback onPress={doHide}>
                             <View style={{ flexGrow: 1 }} />
