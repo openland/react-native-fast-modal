@@ -10,11 +10,11 @@ interface ModalController {
     hideModals(): void;
 }
 
-export let ModalProviderInt: ModalController | null = null;
+let activeModalController: ModalController | null = null;
 
 export function showRawModal(modal: ModalComponent) {
-    if (ModalProviderInt) {
-        ModalProviderInt.showModal(modal);
+    if (activeModalController) {
+        activeModalController.showModal(modal);
     }
 }
 
@@ -37,7 +37,7 @@ export const ModalProvider = React.memo(() => {
                 setModals([]);
             }
         }
-        ModalProviderInt = res;
+        activeModalController = res;
         return res;
     }, []);
 

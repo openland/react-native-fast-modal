@@ -2,8 +2,7 @@ export {
     showRawModal,
     ModalProvider,
     ModalProps,
-    ModalComponent,
-    ModalProviderInt
+    ModalComponent
 } from './ModalProvider';
 export {
     showModal,
