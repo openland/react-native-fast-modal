@@ -12,6 +12,12 @@ interface ModalController {
 
 let activeModalController: ModalController | null = null;
 
+export function hideModals() {
+    if (activeModalController) {
+        activeModalController.hideModals();
+    }
+}
+
 export function showRawModal(modal: ModalComponent) {
     if (activeModalController) {
         activeModalController.showModal(modal);
